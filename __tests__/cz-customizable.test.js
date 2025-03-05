@@ -401,4 +401,27 @@ describe('cz-customizable', () => {
     czModule.prompter(mockCz, commit);
     expect(commit).toHaveBeenCalledWith('feat(myScope): [TICKET-1234] create a new cool feature');
   });
+
+  it('should call commit() function when confirmCommit message is skipped and no confirmCommit answer is present', () => {
+    readConfigFile.mockReturnValue({
+      types: [{ value: 'feat', name: 'feat: my feat' }],
+      scopes: [{ name: 'myScope' }],
+      skipQuestions: ['confirmCommit'],
+      scopeOverrides: {
+        fix: [{ name: 'fixOverride' }],
+      },
+      allowCustomScopes: true,
+      allowBreakingChanges: ['feat'],
+      usePreparedCommit: true,
+    });
+
+    const answers = {
+      type: 'feat',
+      subject: 'create a new cool feature',
+    };
+
+    const mockCz = getMockedCz(answers);
+    czModule.prompter(mockCz, commit);
+    expect(commit).toHaveBeenCalledWith('feat: create a new cool feature');
+  });
 });
