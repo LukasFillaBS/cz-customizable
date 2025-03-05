@@ -18,6 +18,8 @@ module.exports = {
 
     const questions = require('./lib/questions').getQuestions(config, cz);
 
+    const skipQuestions = config.skipQuestions || [];
+
     cz.prompt(questions).then((answers) => {
       if (answers.confirmCommit === 'edit') {
         temp.open(null, (err, info) => {
@@ -38,7 +40,7 @@ module.exports = {
             });
           }
         });
-      } else if (answers.confirmCommit === 'yes' || config.skipQuestions.includes('confirmCommit')) {
+      } else if (answers.confirmCommit === 'yes' || skipQuestions.includes('confirmCommit')) {
         commit(buildCommit(answers, config));
       } else {
         log.info('Commit has been canceled.');
